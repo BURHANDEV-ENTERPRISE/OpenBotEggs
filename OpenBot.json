@@ -1,0 +1,31 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-11-03T12:00:00+08:00",
+    "name": "OpenBot (nightly-labs)",
+    "author": "moonwiraja@burhan.my",
+    "description": "OpenBot self-hosted server (github.com/nightly-labs/openbot) dari image rasmi. Tiada setup: start, taip 'login' di console, kemudian guna dari app OpenBot atau openbot.run/app. Node Docker WAJIB guna seccomp OpenBot (lihat docs/docker.md). Agen bekerja dalam container ini sahaja.",
+    "features": null,
+    "docker_images": {
+        "OpenBot": "ghcr.io/burhandev-enterprise/openbot-pterodactyl:latest"
+    },
+    "file_denylist": [],
+    "startup": "ptero-entry",
+    "config": {
+        "files": "{}",
+        "startup": "{\n    \"done\": \"[OpenBot] Ready.\"\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\n# Aplikasi ada dalam image; data disimpan dalam /home/container.\nmkdir -p /mnt/server\necho \"OpenBot sedia. Start server, kemudian taip: login\"\n",
+            "container": "debian:trixie-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": []
+}
