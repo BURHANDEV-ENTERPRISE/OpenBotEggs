@@ -6,18 +6,11 @@ Pterodactyl egg for [OpenBot](https://github.com/nightly-labs/openbot) (self-hos
 - `Dockerfile`, `ptero-entry.sh` — the official image plus a Pterodactyl entry point, built to
   `ghcr.io/burhandev-enterprise/openbot-pterodactyl:latest` by `.github/workflows/build.yml` every 6 hours.
 
-## Node requirement (once per node)
+## Sandbox
 
-OpenBot's Electron sandbox needs user namespaces, which Docker's default seccomp profile refuses.
-On the Wings node, as root:
-
-```sh
-curl -fsSL -o /etc/docker/seccomp-openbot.json https://raw.githubusercontent.com/nightly-labs/openbot/main/docker/seccomp.json
-# add to /etc/docker/daemon.json:  "seccomp-profile": "/etc/docker/seccomp-openbot.json"
-systemctl restart docker
-```
-
-This applies to every container on the node: it is Docker's default profile plus `clone`/`unshare`.
+Pterodactyl cannot give one server its own seccomp profile, and Docker's default profile refuses the
+user namespaces that the Electron sandbox needs. So OpenBot runs with `--no-sandbox`, and the
+container is the boundary: agents work inside it and cannot leave it. No change to the node is needed.
 
 ## Use
 
