@@ -22,7 +22,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!/bin/bash\n# The app is in the image; data is kept in /home/container.\nmkdir -p /mnt/server\necho \"OpenBot is ready. Start the server, then type: login\"\n",
+            "script": "#!/bin/bash\n# The app is in the image; data is kept in /home/container.\nmkdir -p /mnt/server\necho \"-----------------------------------------\"\necho \"OpenBot installation completed!\"\necho \"Start the server, then type in the console:\"\necho \"  login   sign in to your OpenBot account\"\necho \"  help    all commands and how to use OpenBot\"\necho \"-----------------------------------------\"\n",
             "container": "debian:trixie-slim",
             "entrypoint": "bash"
         }

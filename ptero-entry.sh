@@ -104,7 +104,7 @@ for _ in $(seq 1 180); do
 done
 log "Ready."
 openbot status || true
-log "Type 'help' for the list of commands."
+log "Type 'login' to sign in, or 'help' for all commands and how to use OpenBot."
 
 while kill -0 "$APP" 2>/dev/null; do
     read -r -t 1 -a args; rc=$?
