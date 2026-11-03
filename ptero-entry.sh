@@ -11,6 +11,7 @@ set -uo pipefail
 umask 077
 export HOME=/home/container
 export XDG_RUNTIME_DIR="/tmp/openbot-run-$(id -u)"
+export OPENBOT_CONTROL_SOCKET="$XDG_RUNTIME_DIR/control.sock"
 export TMPDIR=/home/container/.tmp
 export LANG=C.UTF-8
 cd /home/container
@@ -27,6 +28,14 @@ usage() {
   name <name>       Rename this server
   logout            Sign out of this server
   version           Show the OpenBot version
+
+How to use OpenBot after login:
+  1. Open the OpenBot desktop app or https://openbot.run/app with the same email.
+  2. Select this server in the server list.
+  3. Connect an AI provider (Claude, ChatGPT/Codex, Grok, ...) in the app.
+     OpenBot downloads the provider here and signs it in; nothing to install in this console.
+  4. Create agents and give them work. They run only inside this container.
+Phone: type mobile-connect and scan the code with the OpenBot phone app.
 HELP
 }
 
@@ -56,7 +65,7 @@ size="${OPENBOT_DISPLAY_SIZE:-1280x800}"
 (Xvfb :1 -screen 0 "${size}x24" -nolisten tcp >/dev/null 2>&1 &)
 export DISPLAY=:0 OPENBOT_AGENT_DISPLAY=:1
 for display in :0 :1; do
-    for _ in $(seq 1 100); do xdpyinfo -display "$display" >/dev/null 2>&1 && break; sleep 0.1; done
+    for _ in $(seq 1 300); do xdpyinfo -display "$display" >/dev/null 2>&1 && break; sleep 0.1; done
     xdpyinfo -display "$display" >/dev/null 2>&1 || die "Virtual display $display did not start."
 done
 

@@ -8,6 +8,9 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* \
   && ln -s "$(dpkg -L libnss-wrapper | grep '/libnss_wrapper\.so$' | head -n1)" /usr/local/lib/libnss_wrapper.so \
   && test -e /usr/local/lib/libnss_wrapper.so
+# The CLI only knows /run/openbot/control.sock, a folder owned by UID 1000. Under Wings the socket is in
+# XDG_RUNTIME_DIR, so the CLI reads it from there.
+RUN cli=/opt/OpenBot/app/resources/hosting/openbot   && sed -i 's|^SOCKET=/run/openbot/control.sock$|SOCKET=${OPENBOT_CONTROL_SOCKET:-/run/openbot/control.sock}|' "$cli"   && grep -q 'OPENBOT_CONTROL_SOCKET' "$cli"
 COPY --chmod=0755 ptero-entry.sh /usr/local/bin/ptero-entry
 ENV HOME=/home/container
 WORKDIR /home/container
