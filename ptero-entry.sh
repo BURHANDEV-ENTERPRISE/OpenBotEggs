@@ -31,6 +31,16 @@ HELP
 }
 
 mkdir -p "$TMPDIR" "$XDG_RUNTIME_DIR"
+
+# Give the Wings UID a user name. nss_wrapper reads these files only for this process tree.
+if ! getent passwd "$(id -u)" >/dev/null; then
+    grep -v '^container:' /etc/passwd >"$XDG_RUNTIME_DIR/passwd"
+    echo "container:x:$(id -u):$(id -g):container:/home/container:/bin/bash" >>"$XDG_RUNTIME_DIR/passwd"
+    cp /etc/group "$XDG_RUNTIME_DIR/group"
+    getent group "$(id -g)" >/dev/null || echo "container:x:$(id -g):" >>"$XDG_RUNTIME_DIR/group"
+    export NSS_WRAPPER_PASSWD="$XDG_RUNTIME_DIR/passwd" NSS_WRAPPER_GROUP="$XDG_RUNTIME_DIR/group"
+    export LD_PRELOAD=/usr/local/lib/libnss_wrapper.so USER=container LOGNAME=container
+fi
 chmod 0700 "$TMPDIR" "$XDG_RUNTIME_DIR"
 rm -f "$XDG_RUNTIME_DIR/control.sock"
 
