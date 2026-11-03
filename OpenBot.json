@@ -7,7 +7,7 @@
     "exported_at": "2026-11-03T12:00:00+08:00",
     "name": "OpenBot (nightly-labs)",
     "author": "moonwiraja@burhan.my",
-    "description": "OpenBot self-hosted server (github.com/nightly-labs/openbot) dari image rasmi. Tiada setup dan tiada perubahan node: start, taip 'login' di console, kemudian guna dari app OpenBot atau openbot.run/app. Agen bekerja dalam container ini sahaja.",
+    "description": "OpenBot self-hosted server (github.com/nightly-labs/openbot) from the official image. No setup and no node changes: start the server, type 'login' in the console, then use it from the OpenBot app or openbot.run/app. Type 'help' for all console commands. Agents work only inside this container.",
     "features": null,
     "docker_images": {
         "OpenBot": "ghcr.io/burhandev-enterprise/openbot-pterodactyl:latest"
@@ -22,7 +22,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!/bin/bash\n# Aplikasi ada dalam image; data disimpan dalam /home/container.\nmkdir -p /mnt/server\necho \"OpenBot sedia. Start server, kemudian taip: login\"\n",
+            "script": "#!/bin/bash\n# The app is in the image; data is kept in /home/container.\nmkdir -p /mnt/server\necho \"OpenBot is ready. Start the server, then type: login\"\n",
             "container": "debian:trixie-slim",
             "entrypoint": "bash"
         }

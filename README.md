@@ -18,6 +18,6 @@ container is the boundary: agents work inside it and cannot leave it. No change 
 2. Type `login` in the console, then your OpenBot email and the code sent to it.
 3. Use the server from the OpenBot app or https://openbot.run/app.
 
-Console commands: `login`, `status`, `mobile-connect`, `name <name>`, `logout`, `version`.
+Console commands (type `help` to list them): `help`, `login`, `status`, `mobile-connect`, `name <name>`, `logout`, `version`.
 
 OpenBot is licensed under PolyForm Noncommercial 1.0.0.

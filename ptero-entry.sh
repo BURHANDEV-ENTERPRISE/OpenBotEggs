@@ -17,7 +17,18 @@ cd /home/container
 
 log() { echo "[OpenBot] $*"; }
 die() { echo "[OpenBot ERROR] $*" >&2; exit 1; }
-usage() { log "Commands: login | status | mobile-connect | name <name> | logout | version"; }
+usage() {
+    cat <<'HELP'
+[OpenBot] Console commands:
+  help              Show this list
+  login             Sign in to your OpenBot account (email, then the code sent to it)
+  status            Show the server and account status
+  mobile-connect    Show a code to connect the OpenBot phone app
+  name <name>       Rename this server
+  logout            Sign out of this server
+  version           Show the OpenBot version
+HELP
+}
 
 mkdir -p "$TMPDIR" "$XDG_RUNTIME_DIR"
 chmod 0700 "$TMPDIR" "$XDG_RUNTIME_DIR"
@@ -74,7 +85,7 @@ for _ in $(seq 1 180); do
 done
 log "Ready."
 openbot status || true
-usage
+log "Type 'help' for the list of commands."
 
 while kill -0 "$APP" 2>/dev/null; do
     read -r -t 1 -a args; rc=$?
@@ -82,8 +93,9 @@ while kill -0 "$APP" 2>/dev/null; do
     if [ $rc -ne 0 ] && [ ${#args[@]} -eq 0 ]; then sleep 1; continue; fi   # no console
     case "${args[0]:-}" in
         login|status|mobile-connect|logout|name|version) openbot "${args[@]}" ;;
+        help) usage ;;
         '') ;;
-        *) usage ;;
+        *) log "Unknown command: ${args[0]}. Type 'help' for the list of commands." ;;
     esac
 done
 wait "$APP"
