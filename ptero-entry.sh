@@ -88,6 +88,41 @@ started=$(gnome-keyring-daemon --start --components=secrets) || die "Keyring sta
 eval "$started"
 export GNOME_KEYRING_CONTROL
 
+# Real limits. free, nproc, df and /proc show the whole host, so agents would plan for its CPU,
+# memory and disk. Wings writes the plan into .pterodactyl-limits at every start (egg config.files);
+# cgroup is the fallback for CPU and memory.
+num() { [[ ${1:-} =~ ^[0-9]+$ ]] && [ "$1" -gt 0 ] && echo "$1"; }
+plan() { grep -m1 "^$1=" /home/container/.pterodactyl-limits 2>/dev/null | cut -d= -f2; }
+cpu=$(num "$(plan CPU_PERCENT)") || {
+    { read -r quota period </sys/fs/cgroup/cpu.max; } 2>/dev/null && [ "$quota" != max ] && cpu=$((quota * 100 / period)); }
+mem=$(num "$(plan MEMORY_MB)") || {
+    m=$(cat /sys/fs/cgroup/memory.max 2>/dev/null) && [ "$m" != max ] && mem=$((m / 1048576)); }
+disk=$(num "$(plan DISK_MB)") || disk=
+used=$(timeout 20 du -sm /home/container 2>/dev/null | cut -f1)
+cpu_text=${cpu:+"$cpu% ($((cpu / 100)) cores)"}
+mem_text=${mem:+"$mem MB"}
+disk_text=${disk:+"$disk MB"}
+log "Server limits: CPU ${cpu_text:-unlimited}, memory ${mem_text:-unlimited}, disk ${disk_text:-see your hosting panel}${used:+ ($used MB used)}."
+
+# Agents read these instruction files (Claude: ~/.claude/CLAUDE.md, Codex: ~/.codex/AGENTS.md).
+# Only the marked block is replaced; the rest of each file stays as the owner wrote it.
+block="<!-- BEGIN pterodactyl-limits: rewritten at every server start -->
+## Server limits
+This OpenBot server runs in a hosting container. Tools such as free, nproc, df, lscpu and /proc show
+the whole host machine, not this server. These are the real limits:
+- CPU: ${cpu_text:-no limit set}
+- Memory: ${mem_text:-no limit set}. Going over it kills processes and can crash the server.
+- Disk: ${disk_text:-set by the hosting plan} for /home/container${used:+, $used MB in use at the last start}. Going over it can stop the server.
+Stay within them: check \`du -sm /home/container\` before large downloads, installs or builds, run
+heavy jobs one at a time, and delete temporary files when done.
+<!-- END pterodactyl-limits -->"
+for file in "$HOME/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"; do
+    mkdir -p "$(dirname "$file")"
+    touch "$file"
+    { awk '/<!-- BEGIN pterodactyl-limits/{skip=1} !skip{print} /<!-- END pterodactyl-limits -->/{skip=0}' "$file"
+      printf '%s\n' "$block"; } >"$file.tmp" && mv -f "$file.tmp" "$file"
+done
+
 export OPENBOT_SERVER=1
 /opt/OpenBot/app/openbot --password-store=gnome-libsecret --no-sandbox --disable-dev-shm-usage &
 APP=$!

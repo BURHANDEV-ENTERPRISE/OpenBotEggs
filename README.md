@@ -12,6 +12,13 @@ Pterodactyl cannot give one server its own seccomp profile, and Docker's default
 user namespaces that the Electron sandbox needs. So OpenBot runs with `--no-sandbox`, and the
 container is the boundary: agents work inside it and cannot leave it. No change to the node is needed.
 
+## Limits
+
+Tools inside the container (free, nproc, df, /proc) show the whole host. At every start the server
+prints its real CPU, memory and disk limits, which Wings writes from the plan into
+, and puts them in the agents' instruction files
+(, ) so agents stay within them.
+
 ## Use
 
 1. Start the server and wait for `[OpenBot] Ready.`

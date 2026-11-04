@@ -15,14 +15,14 @@
     "file_denylist": [],
     "startup": "ptero-entry",
     "config": {
-        "files": "{}",
+        "files": "{\n    \".pterodactyl-limits\": {\n        \"parser\": \"file\",\n        \"find\": {\n            \"CPU_PERCENT=\": \"CPU_PERCENT={{server.build.cpu_limit}}\",\n            \"MEMORY_MB=\": \"MEMORY_MB={{server.build.memory_limit}}\",\n            \"DISK_MB=\": \"DISK_MB={{server.build.disk_space}}\"\n        }\n    }\n}",
         "startup": "{\n    \"done\": \"[OpenBot] Ready.\"\n}",
         "logs": "{}",
         "stop": "^C"
     },
     "scripts": {
         "installation": {
-            "script": "#!/bin/bash\n# The app is in the image; data is kept in /home/container.\nmkdir -p /mnt/server\necho \"-----------------------------------------\"\necho \"OpenBot installation completed!\"\necho \"Start the server, then type in the console:\"\necho \"  login   sign in to your OpenBot account\"\necho \"  help    all commands and how to use OpenBot\"\necho \"-----------------------------------------\"\n",
+            "script": "#!/bin/bash\n# The app is in the image; data is kept in /home/container.\nmkdir -p /mnt/server\n# Wings fills these in from the server's plan at every start (egg config.files).\nprintf 'CPU_PERCENT=0\nMEMORY_MB=0\nDISK_MB=0\n' > /mnt/server/.pterodactyl-limits\necho \"-----------------------------------------\"\necho \"OpenBot installation completed!\"\necho \"Start the server, then type in the console:\"\necho \"  login   sign in to your OpenBot account\"\necho \"  help    all commands and how to use OpenBot\"\necho \"-----------------------------------------\"\n",
             "container": "debian:trixie-slim",
             "entrypoint": "bash"
         }
