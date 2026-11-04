@@ -90,12 +90,12 @@ export GNOME_KEYRING_CONTROL
 
 # Real limits. free, nproc, df and /proc show the whole host, so agents would plan for its CPU,
 # memory and disk. Wings writes the plan into .pterodactyl-limits at every start (egg config.files);
-# cgroup is the fallback for CPU and memory.
+# SERVER_MEMORY (the plan, from Wings) and then cgroup are the fallbacks for memory; cgroup for CPU.
 num() { [[ ${1:-} =~ ^[0-9]+$ ]] && [ "$1" -gt 0 ] && echo "$1"; }
 plan() { grep -m1 "^$1=" /home/container/.pterodactyl-limits 2>/dev/null | cut -d= -f2; }
 cpu=$(num "$(plan CPU_PERCENT)") || {
     { read -r quota period </sys/fs/cgroup/cpu.max; } 2>/dev/null && [ "$quota" != max ] && cpu=$((quota * 100 / period)); }
-mem=$(num "$(plan MEMORY_MB)") || {
+mem=$(num "$(plan MEMORY_MB)") || mem=$(num "${SERVER_MEMORY:-}") || {
     m=$(cat /sys/fs/cgroup/memory.max 2>/dev/null) && [ "$m" != max ] && mem=$((m / 1048576)); }
 disk=$(num "$(plan DISK_MB)") || disk=
 used=$(timeout 20 du -sm /home/container 2>/dev/null | cut -f1)
