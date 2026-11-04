@@ -16,8 +16,8 @@ container is the boundary: agents work inside it and cannot leave it. No change 
 
 Tools inside the container (free, nproc, df, /proc) show the whole host. At every start the server
 prints its real CPU, memory and disk limits, which Wings writes from the plan into
-, and puts them in the agents' instruction files
-(, ) so agents stay within them.
+`.pterodactyl-limits`, and puts them in the agents' instruction files
+(`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`) so agents stay within them.
 
 ## Use
 
