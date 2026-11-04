@@ -15,7 +15,7 @@
     "file_denylist": [],
     "startup": "ptero-entry",
     "config": {
-        "files": "{\n    \".pterodactyl-limits\": {\n        \"parser\": \"file\",\n        \"find\": {\n            \"CPU_PERCENT=\": \"CPU_PERCENT={{server.build.cpu_limit}}\",\n            \"MEMORY_MB=\": \"MEMORY_MB={{server.build.memory_limit}}\",\n            \"DISK_MB=\": \"DISK_MB={{server.build.disk_space}}\"\n        }\n    }\n}",
+        "files": "{\n    \".pterodactyl-limits\": {\n        \"parser\": \"file\",\n        \"find\": {\n            \"CPU_PERCENT=\": \"CPU_PERCENT={{server.build.cpu}}\",\n            \"MEMORY_MB=\": \"MEMORY_MB={{server.build.memory}}\",\n            \"DISK_MB=\": \"DISK_MB={{server.build.disk}}\"\n        }\n    }\n}",
         "startup": "{\n    \"done\": \"[OpenBot] Ready.\"\n}",
         "logs": "{}",
         "stop": "^C"
